@@ -105,35 +105,13 @@
   /* ──────── LOGO (top left) ──────── */
   .logo-area {
     position: absolute;
-    top: 28px;
+    top: 24px;
     left: 32px;
     z-index: 30;
-    display: flex;
-    align-items: center;
-    gap: 10px;
   }
-  .logo-mark {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-  .logo-bar {
-    width: 5px;
-    height: 20px;
-    background: var(--red);
-    transform: skewX(-12deg);
-  }
-  .logo-bar:nth-child(2) { height: 16px; opacity: 0.8; }
-  .logo-bar:nth-child(3) { height: 12px; opacity: 0.6; }
-  .logo-text {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 22px;
-    color: var(--white);
-    letter-spacing: 0.08em;
-  }
-  .logo-text span {
-    color: var(--red);
+  .logo-area img {
+    height: 36px;
+    width: auto;
   }
 
   /* ──────── SCORE HUD (top right) ──────── */
@@ -262,12 +240,7 @@
 
   <!-- Logo -->
   <div class="logo-area">
-    <div class="logo-mark">
-      <div class="logo-bar"></div>
-      <div class="logo-bar"></div>
-      <div class="logo-bar"></div>
-    </div>
-    <div class="logo-text"><span>EZ</span>LOADER</div>
+    <img src="ezloader logo menu.webp" alt="EZ Loader">
   </div>
 
   <!-- HUD -->
@@ -946,18 +919,19 @@
       ctx.globalAlpha = 1;
     }
 
-    // Game over text
+    // Game over text — positioned near the bottom, above where the alien was
     if (!gameActive && gameOverTimer > 0) {
+      const goY = canvas.height - 120;
       ctx.fillStyle = COLORS.red;
       ctx.font = '900 48px Outfit, sans-serif';
       ctx.textAlign = 'center';
       ctx.shadowColor = COLORS.redGlow;
       ctx.shadowBlur = 20;
-      ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 + 80);
+      ctx.fillText('GAME OVER', canvas.width / 2, goY);
       ctx.font = '400 16px "Space Mono", monospace';
       ctx.fillStyle = COLORS.whiteDim;
       ctx.shadowBlur = 0;
-      ctx.fillText('CLICK TO PLAY AGAIN', canvas.width / 2, canvas.height / 2 + 120);
+      ctx.fillText('CLICK TO PLAY AGAIN', canvas.width / 2, goY + 40);
       ctx.textAlign = 'start';
     }
   }
