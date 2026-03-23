@@ -441,12 +441,13 @@
     x: 0, y: 0, w: alienW, h: alienH, speed: 320,
   };
 
-  // Cursors (enemies)
-  const CURSOR_COLS = 12;
-  const CURSOR_ROWS = 5;
-  const CURSOR_SIZE = 26;
-  const CURSOR_GAP_X = 10;
-  const CURSOR_GAP_Y = 10;
+  // Cursors (enemies) — scale columns to screen width
+  const isMobile = canvas.width < 600;
+  const CURSOR_COLS = isMobile ? 7 : 12;
+  const CURSOR_ROWS = isMobile ? 4 : 5;
+  const CURSOR_SIZE = isMobile ? 22 : 26;
+  const CURSOR_GAP_X = isMobile ? 8 : 10;
+  const CURSOR_GAP_Y = isMobile ? 8 : 10;
   let cursors = [];
   let cursorDir = 1;
   let cursorSpeed = 40;
@@ -830,10 +831,10 @@
     }
     if (hitEdge) {
       cursorDir *= -1;
-      cursorOffsetY += 18;
+      cursorOffsetY += isMobile ? 10 : 18;
 
       // Speed up as they descend
-      cursorSpeed = cursorBaseSpeed + cursorOffsetY * 0.5;
+      cursorSpeed = cursorBaseSpeed + cursorOffsetY * (isMobile ? 0.25 : 0.5);
     }
 
     // Enemy shooting
