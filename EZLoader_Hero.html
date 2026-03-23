@@ -208,6 +208,61 @@
     50% { opacity: 1; }
   }
   .play-prompt.hidden { display: none; }
+
+  /* ──────── TOUCH CONTROLS (mobile only) ──────── */
+  .touch-controls {
+    display: none;
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 24px;
+    pointer-events: none;
+  }
+  .touch-btn {
+    pointer-events: auto;
+    width: 64px;
+    height: 64px;
+    border: 2px solid rgba(232,64,47,0.5);
+    border-radius: 14px;
+    background: rgba(11,23,48,0.6);
+    color: var(--white);
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .touch-btn:active, .touch-btn.pressed {
+    background: rgba(232,64,47,0.3);
+    border-color: var(--red);
+  }
+  .touch-dpad {
+    display: flex;
+    gap: 12px;
+  }
+  .touch-fire {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    border-color: rgba(240,242,248,0.4);
+  }
+  .touch-fire:active, .touch-fire.pressed {
+    background: rgba(240,242,248,0.2);
+    border-color: var(--white);
+  }
+  @media (hover: none) and (pointer: coarse) {
+    .touch-controls { display: flex; }
+  }
 </style>
 </head>
 <body>
@@ -257,7 +312,16 @@
   </div>
 
   <!-- Play prompt -->
-  <div class="play-prompt" id="playPrompt">Click to play &mdash; Arrow keys + Space</div>
+  <div class="play-prompt" id="playPrompt">Tap or click to play</div>
+
+  <!-- Touch controls (shown on mobile) -->
+  <div class="touch-controls" id="touchControls">
+    <div class="touch-dpad">
+      <div class="touch-btn" id="btnLeft">&#9664;</div>
+      <div class="touch-btn" id="btnRight">&#9654;</div>
+    </div>
+    <div class="touch-btn touch-fire" id="btnFire">FIRE</div>
+  </div>
 
   <div class="bottom-bar"></div>
 </div>
@@ -423,6 +487,33 @@
       startGame();
     }
   });
+
+  // Touch controls
+  function bindTouch(btnId, keyCode) {
+    const btn = document.getElementById(btnId);
+    btn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      keys[keyCode] = true;
+      btn.classList.add('pressed');
+      if (!hasFocus) { hasFocus = true; promptEl.classList.add('hidden'); }
+      if (!gameActive) startGame();
+    }, { passive: false });
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      keys[keyCode] = false;
+      btn.classList.remove('pressed');
+    });
+    btn.addEventListener('touchcancel', () => {
+      keys[keyCode] = false;
+      btn.classList.remove('pressed');
+    });
+  }
+  bindTouch('btnLeft', 'ArrowLeft');
+  bindTouch('btnRight', 'ArrowRight');
+  bindTouch('btnFire', 'Space');
+
+  // Prevent scrolling/zooming when touching the game area
+  hero.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
   function updateLives() {
     livesEl.textContent = '\u2665 '.repeat(lives).trim();
